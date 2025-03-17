@@ -13,7 +13,7 @@ function App() {
   return (
     <Container>
       <Typography variant="h3" component="h1" align="center" sx={{ my: 4 }}>
-        Интернет-магазин
+        Магазин питомцев
       </Typography>
       <IconButton onClick={toggleTheme} sx={{ position: 'absolute', top: 16, right: 16 }}>
         {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}

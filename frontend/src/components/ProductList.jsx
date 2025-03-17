@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadProducts, setCategory, setSortBy, setSearchQuery } from '../features/productsSlice';
 import ProductCard from './ProductCard';
@@ -10,8 +10,10 @@ const ProductList = () => {
   const dispatch = useDispatch();
   const { items, status, category, sortBy, searchQuery } = useSelector((state) => state.products);
 
+  const [itemsPerRow, setItemsPerRow] = useState(2);
+
   useEffect(() => {
-    dispatch(loadProducts());
+      dispatch(loadProducts());
   }, [dispatch]);
 
   const filteredProducts = category === 'Все'
@@ -29,17 +31,23 @@ const ProductList = () => {
     return 0;
   });
 
-  if (status === 'loading') return <div>Loading...</div>;
-  if (status === 'failed') return <div>Error loading products.</div>;
+  const handleItemsPerRowChange = (value) => {
+    setItemsPerRow(value);
+  };
+
+  if (status === 'loading') return <div>Загрузка...</div>;
+  if (status === 'failed') return <div>Возникла ошибка при загрузке продуктов</div>;
 
   return (
     <div>
       <FilterPanel onFilterChange={(category) => dispatch(setCategory(category))} />
-      <SortPanel onSortChange={(sortBy) => dispatch(setSortBy(sortBy))} />
+      <SortPanel onSortChange={(sortBy) => dispatch(setSortBy(sortBy))} onItemsPerRowChange={handleItemsPerRowChange}/>
       <SearchBar onSearchChange={(query) => dispatch(setSearchQuery(query))} />
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
         {sortedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <div key={product.id} style={{ display: 'flex', justifyContent: 'center', flex: `0 0 calc(100% / ${itemsPerRow} - 16px)`, margin: '8px' }}>
+            <ProductCard key={product.id} product={product} />
+          </div>
         ))}
       </div>
     </div>
